@@ -1,69 +1,110 @@
-import React from 'react';
-import { ScrollView, Text, View, StyleSheet, Button } from 'react-native';
 import { useState } from "react";
+import {
+    KeyboardAvoidingView,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
+} from "react-native";
+import Task from "./components/Task";
 
+export default function App() {
+    const [task, setTask] = useState("");
 
-const YourApp = () => {
-  // const [count, setCount] = useState(0);
+    const [tasks, setTasks] = useState([]);
 
-  // const increaseCount = () => {
-  //   setCount(count + 1);
-  // };
+    const addTask = () => {
+        setTasks([...tasks, task]);
+        setTask(null);
+        
+    };
 
-  const [items, setItems] = useState([
-    { key: 1, item: "item 1" },
-    { key: 2, item: "item 2" },
-    { key: 3, item: "item 3" },
-    { key: 4, item: "item 4" },
-    { key: 5, item: "item 5" },
-    { key: 6, item: "item 6" },
-    { key: 7, item: "item 7" },
-    { key: 8, item: "item 8" },
-    { key: 9, item: "item 9" },
-    { key: 10, item: "item 10" },
-    { key: 11, item: "item 11" },
-    { key: 12, item: "item 12" },
-    { key: 13, item: "item 13" },
-  ]);
+    const completeTask = (index) => {
+        let tasksCopy = [...tasks];
+        tasksCopy.splice(index, 1);
+        setTasks(tasksCopy);
+    };
 
-
-  return (
-    // <View style={styles.demo1}>
-    //   <Text style={styles.text}>
-    //     Nguyễn Thanh Lâm 26/03/2002 🎉
-    //   </Text>
-    //   <Button onPress={increaseCount} title="Chọt mình đi"></Button>
-    //   <Text style={styles.count}>Chọt chi lắm dị má: {count}</Text>
-    // </View>
-    <ScrollView style={styles.container}>
-    {items.map((item) => {
-      return (
-        <View style={styles.item} key={item.key}>
-          <Text style={styles.text}>{item.item}</Text>
+    return (
+        <View style={styles.container}>
+            <View style={styles.taskWrapper}>
+                <Text style={styles.sectionTitle}>Today's tasks</Text>
+                <View style={styles.items}>
+                    {tasks.map((item, index) => {
+                        return (
+                            <TouchableOpacity
+                                onPress={()=>completeTask(index)}
+                                key={index}
+                            >
+                                <Task text={item} />
+                            </TouchableOpacity>
+                        );
+                    })}
+                </View>
+            </View>
+            <KeyboardAvoidingView
+                style={styles.writeTaskWrapper}
+                behavior="height"
+            >
+                <TextInput
+                    style={styles.input}
+                    placeholder="Add new task ..."
+                    value={task}
+                    onChangeText={(text) => setTask(text)}
+                />
+                <TouchableOpacity onPress={addTask}>
+                    <View style={styles.addWrapper}>
+                        <Text>+</Text>
+                    </View>
+                </TouchableOpacity>
+            </KeyboardAvoidingView>
         </View>
-      );
-    })}
-  </ScrollView>
-    
-  );
+    );
 }
 
-export default YourApp;
-
 const styles = StyleSheet.create({
-  demo1:{
-    flex: 1, 
-    justifyContent: "center", 
-    alignItems: "center", 
-    
-  },
-  text:{
-    color: "#FF0000",
-    fontSize:50,
-  },
-  item: {
-    alignItems: "center",
-    justifyContent: "center",
-  },
-
+    container: {
+        flex: 1,
+        backgroundColor: "#E8EAED",
+    },
+    taskWrapper: {
+        paddingTop: 80,
+        paddingHorizontal: 20,
+    },
+    items: {
+        marginTop: 20,
+    },
+    sectionTitle: {
+        fontSize: 24,
+        fontWeight: "bold",
+    },
+    input: {
+        paddingHorizontal: 15,
+        paddingVertical: 15,
+        backgroundColor: "#FFF",
+        borderRadius: 60,
+        width: 250,
+        borderWidth: 1,
+        borderColor: "#C0C0C0",
+    },
+    writeTaskWrapper: {
+        position: "absolute",
+        bottom: 60,
+        width: "100%",
+        flexDirection: "row",
+        justifyContent: "space-around",
+        alignContent: "center",
+    },
+    addText: {},
+    addWrapper: {
+        width: 60,
+        height: 60,
+        backgroundColor: "#FFF",
+        borderRadius: 60,
+        justifyContent: "center",
+        alignItems: "center",
+        borderColor: "#C0C0C0",
+        borderWidth: 1,
+    },
 });
